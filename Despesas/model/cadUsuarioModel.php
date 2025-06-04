@@ -13,7 +13,7 @@ class CadastroModel {
         try {
             $this->pdo->beginTransaction();
         
-            // Primeiro INSERT (cadlogin)
+            
             $query = "INSERT INTO cadlogin (nome, cpf, email, data_nasc, telefone) 
                       VALUES (:nome, :cpf, :email, :data_nasc, :telefone)";
             $stmt = $this->pdo->prepare($query);
@@ -24,22 +24,21 @@ class CadastroModel {
             $stmt->bindParam(":telefone", $telefone);
             $stmt->execute();
         
-            // Pegando o ID gerado automaticamente
+           
             $cod_usuario = $this->pdo->lastInsertId();
         
-            // Verifica se o ID foi gerado corretamente
+        
             if (!$cod_usuario) {
                 throw new Exception("Erro ao obter cod_usuario.");
             }
         
-            // Garante que $login não seja null
+        
             if (empty($cpf) && empty($email)) {
                 throw new Exception("CPF e Email não podem estar vazios.");
             }
             
             $login = ($opcaoLogin === "cpf") ? $cpf : $email;
         
-            // Segundo INSERT (usuario)
             $query1 = "INSERT INTO usuario (login, senha, codUsuario) VALUES (:login, :senha, :cod_usuario)";
             $stmt = $this->pdo->prepare($query1);
             $stmt->bindParam(":login", $login);
@@ -48,7 +47,6 @@ class CadastroModel {
         
             $stmt->execute();
         
-            // Confirma a transação
             $this->pdo->commit();
             
             return true;
