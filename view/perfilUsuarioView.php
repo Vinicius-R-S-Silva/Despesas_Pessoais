@@ -17,18 +17,24 @@ if (isset($_SESSION['mensagem'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - <?php echo htmlspecialchars($usuario['nome'] ?? ''); ?></title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+            background: url('../images/image.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: #333;
             margin: 0;
+            padding: 0;
             display: flex;
-            margin-top: 80px;
+            flex-direction: column;
         }
 
         .sidebar {
-            width: 220px;
-            background-color: #003c6d;
+            width: 180px; /* Diminuída */
+            background-color: rgba(0, 60, 109, 0.9);
             height: 100vh;
             padding: 2rem 1rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
@@ -55,23 +61,26 @@ if (isset($_SESSION['mensagem'])) {
         }
 
         .main-content {
-            margin-left: 220px;
-            width: calc(100% - 220px);
+            margin-left: 180px; /* Ajustado junto com o sidebar */
+            width: calc(100% - 180px);
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
         }
 
         header {
             position: fixed;
             top: 0;
-            left: 0;
+            left: 180px; /* Alinhado com sidebar */
             right: 0;
             height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 0 1rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-       
+            z-index: 100;
         }
 
         .user-settings span {
@@ -80,11 +89,13 @@ if (isset($_SESSION['mensagem'])) {
 
         .feed-container {
             width: 70%;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.95);
             border-radius: 8px;
             padding: 1rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 2rem auto;
+            margin: 6rem auto 2rem auto; /* Empurra para baixo do header */
+            position: relative;
+            z-index: 1;
         }
 
         .publication-list {
@@ -126,8 +137,13 @@ if (isset($_SESSION['mensagem'])) {
                 width: 100%;
             }
 
+            header {
+                left: 0;
+            }
+
             .feed-container {
-                width: 100%;
+                width: 95%;
+                margin: 6rem auto;
             }
         }
     </style>
@@ -149,7 +165,7 @@ if (isset($_SESSION['mensagem'])) {
         </div>
     </header>
 
-    <div class="feed-container">
+    <div class="feed-container"> 
         <?php
         if (isset($_GET['pagina']) && $_GET['pagina'] === 'cadastrar_despesas') {
             include 'cadastroview.php';
@@ -159,23 +175,6 @@ if (isset($_SESSION['mensagem'])) {
         }
         elseif (isset($_GET['pagina']) && $_GET['pagina'] === 'ver_historico') {
             include 'tabelaView.php';
-        }
-         elseif (isset($usuario)) {
-            echo "<h2>Ações de " . htmlspecialchars($usuario['nome'] ?? '') . "</h2>";
-            echo "<ul class='publication-list'>";
-            if (!empty($publicacoes)) {
-                foreach ($publicacoes as $publicacao) {
-                    echo "<li class='publication-item'>";
-                    echo "<p>" . htmlspecialchars($publicacao['conteudo']) . "</p>";
-                    echo "<small>" . htmlspecialchars($publicacao['dataHora']) . "</small>";
-                    echo "</li>";
-                }
-            } else {
-                echo "<li class='publication-item'>Nenhuma publicação encontrada.</li>";
-            }
-            echo "</ul>";
-        } else {
-            echo "<p>Nenhum conteúdo carregado.</p>";
         }
         ?>
     </div>
